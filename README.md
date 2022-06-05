@@ -10,7 +10,7 @@ For the first time, we need to create a Super User. You can do that by following
 
 In another terminal, SSH into the web app container by
 
-> docker exec -it blog_web_app_1 /bin/sh
+> docker exec -it blog_app_web_1 /bin/sh
 
 Once inside the container, you can use the standard method for creating a superuser in Django.
 
