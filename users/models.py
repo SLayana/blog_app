@@ -11,5 +11,5 @@ class UserProfile(models.Model):
         db_table = "user_profiles"
 
     def __str__(self):
-        return
+        return self.user.username
 

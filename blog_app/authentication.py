@@ -34,3 +34,33 @@ class UserAuthentication(authentication.BaseAuthentication):
             request.user_id = user.id
         else:
             raise exceptions.AuthenticationFailed("No token")
+
+
+class UserIsAuthOrReadOnly(authentication.BaseAuthentication):
+    
+    def authenticate(self, request):
+        if request.method in ['POST', 'DELETE'] and request.token:
+            try:
+                token_payload = jwt.decode(request.token, settings.SECRET_KEY, algorithms=["HS256"])
+            except:
+                raise APIException({
+                    "status": "error",
+                    "message": "Invalid X-API-TOKEN",
+                    "data": "null"
+                })
+
+            try:
+                user = User.objects.get(id=token_payload['user_id'], is_active=True)
+            except User.DoesNotExist:
+                return Response({
+                    "status": "failure",
+                    "message": "User not found",
+                    "data": None
+                })
+            
+            request.user_id = user.id
+
+        elif request.method in ['GET']:
+            pass
+        else:
+            raise exceptions.AuthenticationFailed("No token")

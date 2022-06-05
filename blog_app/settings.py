@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'users',
+    'posts',
 ]
 
 MIDDLEWARE = [
@@ -133,3 +134,5 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
 }
+
+ACCESS_TOKEN_LIFETIME = 3600

@@ -1,8 +1,10 @@
 from django.urls import path
 
-from users.views import ListUsers
+from users.views import CreateOrListUserAPIView, UserDetailAPIView
 
 urlpatterns = [
     
-    path('users', ListUsers.as_view(), name='list_users'),
+    path('users', CreateOrListUserAPIView.as_view(), name='list_users'),
+    path('users/<int:id>', UserDetailAPIView.as_view(), name='user_detail'),
+   
 ]
