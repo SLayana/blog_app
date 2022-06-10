@@ -4,7 +4,8 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from blog_app.authentication import UserIsAuthOrReadOnly
 
-from .serializers import UserSerializer, UserDetailSerializer, CreateUserSerializer
+from .serializers import UserSerializer, UserDetailSerializer, CreateUserSerializer, \
+                         UpdateUserSerializer
 from .models import UserProfile
 
 
@@ -30,8 +31,8 @@ class CreateOrListUserAPIView(APIView):
             return Response({
                     "status": "failure",
                     "message": "Request body has wrong data",
-                    "data": None
-                }, status=status.HTTP_404_NOT_FOUND)
+                    "data": serializer.errors
+                }, status=400)
         return Response({
                     "status": "success",
                     "message": "User created successfully",
@@ -73,17 +74,23 @@ class UserDetailAPIView(APIView):
             user_profile = UserProfile.objects.get(user_id=id)
         except UserProfile.DoesNotExist:
             user_profile = UserProfile.objects.create(user_id=id)
-            
-        user_profile.bio=request.data['bio']
-        user_profile.location=request.data['location']
-        user_profile.birth_date=request.data['birth_date']
-        user_profile.save()
+        
+        serializer = UpdateUserSerializer(user_profile, data=request.data)
 
-        return Response({
+        if serializer.is_valid():
+            serializer.save()
+            
+            return Response({
                     "status": "success",
                     "message": "UserProfile updated successfully",
                     "data": None
                 })
+        else:
+            return Response({
+                    "status": "failure",
+                    "message": "Request body has wrong data",
+                    "data": serializer.errors
+                }, status=400)
 
     def delete(self, request, id):
 

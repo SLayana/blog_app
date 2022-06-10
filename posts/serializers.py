@@ -20,5 +20,3 @@ class CommentListSerializer(serializers.Serializer):
     id = serializers.CharField()
     comment = serializers.CharField()
     user = serializers.CharField(source='user.username')
-
-  
